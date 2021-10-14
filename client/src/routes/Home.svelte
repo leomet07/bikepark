@@ -1,10 +1,22 @@
 <script>
+	const popup = `<input type='button' value='Remove' class='remove_marker_button'/>`;
+
 	window.onload = async () => {
 		const center = [40.717, -74.012];
 		const startZoom = 18;
 
 		let map = L.map("mapid").setView(center, startZoom);
+		const popupOpenHandler = function () {
+			const clickedMarker = this;
 
+			console.log("Clicked marker");
+			document
+				.querySelector(".remove_marker_button")
+				.addEventListener("click", function () {
+					console.log("Clicked delete");
+					map.removeLayer(clickedMarker);
+				});
+		};
 		L.tileLayer(
 			"https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
 			{
@@ -32,7 +44,10 @@
 
 		for (let i = 0; i < places.length; i++) {
 			const place = places[i];
-			L.marker([place.lat, place.long], {}).addTo(map);
+			const marker = L.marker([place.lat, place.long], {}).addTo(map);
+			marker.bindPopup(popup);
+
+			marker.on("popupopen", popupOpenHandler);
 		}
 
 		map.on("click", onMapClick);
@@ -43,23 +58,11 @@
 				alt: "Dropped Marker",
 				riseOnHover: true,
 				draggable: false,
-			})
-				.bindPopup(
-					`<input type='button' value='Remove' class='remove_marker_button'/>`
-				)
-				.addTo(map);
+			}).addTo(map);
 
-			marker.on("popupopen", function () {
-				const clickedMarker = this;
+			marker.bindPopup(popup);
 
-				console.log("Clicked marker");
-				document
-					.querySelector(".remove_marker_button")
-					.addEventListener("click", function () {
-						console.log("Clicked delete");
-						map.removeLayer(clickedMarker);
-					});
-			});
+			marker.on("popupopen", popupOpenHandler);
 		}
 	};
 </script>
