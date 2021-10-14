@@ -20,7 +20,7 @@
 			}
 		).addTo(map);
 
-		const req = await fetch("http://127.0.0.1:8060/api/db/get_places", {
+		const req = await fetch(window.BASE_URL + "/api/db/get_places", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
