@@ -5,6 +5,7 @@
 	import About from "./routes/About.svelte";
 
 	window.BASE_URL = "https://bikeparkbackend.herokuapp.com";
+	console.log(window.BASE_URL);
 	if (
 		window.location.hostname == "localhost" ||
 		window.location.hostname == "127.0.0.1"
