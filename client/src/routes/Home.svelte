@@ -38,43 +38,28 @@
 		map.on("click", onMapClick);
 		// Script for adding marker on map click
 		function onMapClick(e) {
-			let feature = {
-				type: "Feature",
-				properties: {},
-				geometry: {
-					type: "Point",
-					coordinates: [e.latlng.lat, e.latlng.lng],
-				},
-			};
+			const marker = L.marker(e.latlng, {
+				title: "Dropped Marker",
+				alt: "Dropped Marker",
+				riseOnHover: true,
+				draggable: false,
+			})
+				.bindPopup(
+					"<input type='button' value='Remove' class='remove_marker_button'/>"
+				)
+				.addTo(map);
 
-			let marker;
+			marker.on("popupopen", function () {
+				const clickedMarker = this;
 
-			L.geoJson(feature, {
-				pointToLayer: function () {
-					marker = L.marker(e.latlng, {
-						title: "Dropped Marker",
-						alt: "Dropped Marker",
-						riseOnHover: true,
-						draggable: false,
-					}).bindPopup(
-						"<input type='button' value='Remove' class='remove_marker_button'/>"
-					);
-
-					marker.on("popupopen", function () {
-						const clickedMarker = this;
-
-						console.log("Clicked marker");
-						document
-							.querySelector(".remove_marker_button")
-							.addEventListener("click", function () {
-								console.log("Clicked delete");
-								map.removeLayer(clickedMarker);
-							});
+				console.log("Clicked marker");
+				document
+					.querySelector(".remove_marker_button")
+					.addEventListener("click", function () {
+						console.log("Clicked delete");
+						map.removeLayer(clickedMarker);
 					});
-
-					return marker;
-				},
-			}).addTo(map);
+			});
 		}
 	};
 </script>
