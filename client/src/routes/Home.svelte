@@ -45,7 +45,7 @@
 				draggable: false,
 			})
 				.bindPopup(
-					"<input type='button' value='Remove' class='remove_marker_button'/>"
+					`<input type='button' value='Remove' class='remove_marker_button'/>`
 				)
 				.addTo(map);
 
