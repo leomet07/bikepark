@@ -10,11 +10,29 @@
 			const clickedMarker = this;
 
 			console.log("Clicked marker");
+
+			const dbID = clickedMarker.options.placeDBid;
+
 			document
 				.querySelector(".remove_marker_button")
-				.addEventListener("click", function () {
+				.addEventListener("click", async function () {
 					console.log("Clicked delete");
-					map.removeLayer(clickedMarker);
+					const delreq = await fetch(
+						window.BASE_URL + "/api/db/delete_place",
+						{
+							method: "DELETE",
+							headers: {
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify({ _id: dbID }),
+						}
+					);
+
+					const deljson = await delreq.json();
+
+					if (deljson.success) {
+						map.removeLayer(clickedMarker);
+					}
 				});
 		};
 		L.tileLayer(
@@ -44,13 +62,15 @@
 
 		for (let i = 0; i < places.length; i++) {
 			const place = places[i];
-			const marker = L.marker([place.lat, place.long], {}).addTo(map);
+			const marker = L.marker([place.lat, place.long], {
+				placeDBid: place._id,
+			}).addTo(map);
 			marker.bindPopup(popup);
 
 			marker.on("popupopen", popupOpenHandler);
 		}
 
-		map.on("click", onMapClick);
+		// map.on("click", onMapClick);
 		// Script for adding marker on map click
 		function onMapClick(e) {
 			const marker = L.marker(e.latlng, {
