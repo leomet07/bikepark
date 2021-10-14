@@ -70,19 +70,40 @@
 			marker.on("popupopen", popupOpenHandler);
 		}
 
-		// map.on("click", onMapClick);
+		map.on("click", onMapClick);
 		// Script for adding marker on map click
-		function onMapClick(e) {
-			const marker = L.marker(e.latlng, {
-				title: "Dropped Marker",
-				alt: "Dropped Marker",
-				riseOnHover: true,
-				draggable: false,
-			}).addTo(map);
+		async function onMapClick(e) {
+			console.log(e.latlng);
 
-			marker.bindPopup(popup);
+			const createreq = await fetch(
+				window.BASE_URL + "/api/db/create_place",
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						name: "Citi",
+						lat: e.latlng.lat,
+						long: e.latlng.lng,
+					}),
+				}
+			);
 
-			marker.on("popupopen", popupOpenHandler);
+			const createjson = await createreq.json();
+
+			if (createjson) {
+				const marker = L.marker(e.latlng, {
+					title: "Dropped Marker",
+					alt: "Dropped Marker",
+					riseOnHover: true,
+					draggable: false,
+					placeDBid: createjson.place._id,
+				}).addTo(map);
+
+				marker.bindPopup(popup);
+				marker.on("popupopen", popupOpenHandler);
+			}
 		}
 	};
 </script>
