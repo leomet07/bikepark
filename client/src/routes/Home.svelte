@@ -6,6 +6,8 @@
 		const startZoom = 18;
 
 		let map = L.map("mapid").setView(center, startZoom);
+		map.doubleClickZoom.disable();
+
 		const popupOpenHandler = function () {
 			const clickedMarker = this;
 
@@ -70,7 +72,7 @@
 			marker.on("popupopen", popupOpenHandler);
 		}
 
-		map.on("click", onMapClick);
+		map.addEventListener("dblclick", onMapClick);
 		// Script for adding marker on map click
 		async function onMapClick(e) {
 			console.log(e.latlng);
