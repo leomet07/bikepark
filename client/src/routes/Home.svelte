@@ -92,7 +92,7 @@
 
 			const createjson = await createreq.json();
 
-			if (createjson) {
+			if (createjson.success) {
 				const marker = L.marker(e.latlng, {
 					title: "Dropped Marker",
 					alt: "Dropped Marker",

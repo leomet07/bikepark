@@ -17,6 +17,7 @@ router.post("/create_place", async (req, res, next) => {
 		res.json({
 			place: saved_place,
 			description: "Successfully created the place.",
+			success: true,
 		});
 	} catch (error) {
 		next(error);
