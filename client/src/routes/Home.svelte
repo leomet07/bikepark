@@ -5,7 +5,7 @@
 		const center = [40.717, -74.012];
 		const startZoom = 18;
 
-		let map = L.map("mapid").setView(center, startZoom);
+		let map = L.map("mapid", { tap: false }).setView(center, startZoom);
 		map.doubleClickZoom.disable();
 
 		const popupOpenHandler = function () {
