@@ -23,6 +23,18 @@ router.post("/create_place", async (req, res, next) => {
 	}
 });
 
+router.delete("/delete_place", async (req, res, next) => {
+	try {
+		const idToDelete = req.body._id;
+
+		await delete_place(idToDelete);
+
+		res.json({ success: true, message: "Deleted successfully" });
+	} catch (error) {
+		next(error);
+	}
+});
+
 async function create_place(query) {
 	let place = await Place.create(query);
 	let saved_place = await place.save();
@@ -43,5 +55,13 @@ async function get_places_handler(req, res, next) {
 		next(error);
 	}
 }
+async function delete_place(id) {
+	const doesExist = await Place.findById(id);
 
+	if (!doesExist) {
+		throw new Error("Cannot delete place that does not exist");
+	}
+
+	const success = await Place.deleteOne({ _id: id });
+}
 module.exports.router = router;
