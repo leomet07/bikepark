@@ -1,6 +1,10 @@
 <script>
 	const popup = `<input type='button' value='Remove' class='remove_marker_button'/>`;
 
+	let email_input;
+	let password_input;
+	import { validauthtoken } from "../stores";
+
 	window.onload = async () => {
 		const center = [40.717, -74.012];
 		const startZoom = 18;
@@ -25,6 +29,7 @@
 							method: "DELETE",
 							headers: {
 								"Content-Type": "application/json",
+								"auth-token": $validauthtoken,
 							},
 							body: JSON.stringify({ _id: dbID }),
 						}
@@ -52,15 +57,18 @@
 			}
 		).addTo(map);
 
-		const req = await fetch(window.BASE_URL + "/api/db/get_places", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: "{}",
-		});
+		const get_places_req = await fetch(
+			window.BASE_URL + "/api/db/get_places",
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: "{}",
+			}
+		);
 
-		const places = (await req.json()).places;
+		const places = (await get_places_req.json()).places;
 
 		for (let i = 0; i < places.length; i++) {
 			const place = places[i];
@@ -72,7 +80,12 @@
 			marker.on("popupopen", popupOpenHandler);
 		}
 
-		map.addEventListener("dblclick", onMapClick);
+		validauthtoken.subscribe((value) => {
+			if (value) {
+				map.addEventListener("dblclick", onMapClick);
+			}
+		});
+
 		// Script for adding marker on map click
 		async function onMapClick(e) {
 			console.log(e.latlng);
@@ -83,6 +96,7 @@
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
+						"auth-token": $validauthtoken,
 					},
 					body: JSON.stringify({
 						name: "Citi",
@@ -108,6 +122,29 @@
 			}
 		}
 	};
+	async function login_handler(e) {
+		e.preventDefault();
+		console.log({ email_input, password_input });
+		let response = await fetch(window.BASE_URL + "/api/auth/login", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				email: email_input,
+				password: password_input,
+			}),
+		});
+		let responsejson = await response.json();
+		console.log(responsejson);
+		if (responsejson.logged_in) {
+			let token = responsejson.token;
+			window.localStorage.setItem("auth-token", token);
+
+			$validauthtoken = token;
+			console.log($validauthtoken);
+		}
+	}
 </script>
 
 <main id="home">
@@ -115,26 +152,48 @@
 		<div id="titleparent" class="navchild">
 			<span class="navtext">BikePark</span>
 		</div>
-		<div class="navchild">
-			<span class="navtext inputfieldlocationparent">
-				<input class="inputfieldlocation" type="text" />
-			</span>
-		</div>
-		<div class="navchild">
-			<span class="navtext inputfieldlocationparent">
-				<input class="inputfieldlocation" type="text" />
-			</span>
-		</div>
-		<div class="navchild">
-			<span class="navtext loginbtnparent">
-				<input
-					class="inputfieldlocation"
-					id="loginbtn"
-					type="submit"
-					value="Go!"
-				/>
-			</span>
-		</div>
+		{#if $validauthtoken == ""}
+			<form on:submit={login_handler}>
+				<div class="navchild">
+					<span class="navtext inputfieldlocationparent">
+						<input
+							class="inputfieldlocation"
+							type="email"
+							bind:value={email_input}
+						/>
+					</span>
+				</div>
+				<div class="navchild">
+					<span class="navtext inputfieldlocationparent">
+						<input
+							class="inputfieldlocation"
+							type="password"
+							bind:value={password_input}
+						/>
+					</span>
+				</div>
+				<div class="navchild">
+					<span class="navtext navbtnparent">
+						<input
+							class="inputfieldlocation navbtn"
+							id="loginbtn"
+							type="submit"
+							value="Go!"
+						/>
+					</span>
+				</div>
+			</form>
+		{:else}
+			<div class="navchild">
+				<span class="navtext navbtnparent">
+					<button
+						class="inputfieldlocation navbtn"
+						id="logoutbtn"
+						type="submit">Log Out</button
+					></span
+				>
+			</div>
+		{/if}
 	</div>
 	<div id="mapid" />
 </main>
@@ -197,15 +256,21 @@
 		height: calc(100vh - 30px);
 		/* height: 96vh; */
 	}
-	.loginbtnparent {
+	.navbtnparent {
 		padding-top: 3px;
 	}
-	#loginbtn {
-		width: 35px;
+
+	.navbtn {
 		height: 25px;
 		border: 1px solid black;
 
 		padding-top: 2px;
+	}
+	#loginbtn {
+		width: 35px;
+	}
+	#logoutbtn {
+		width: 65px;
 	}
 
 	@media only screen and (max-width: 900px) {
