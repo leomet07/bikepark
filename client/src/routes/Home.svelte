@@ -150,12 +150,12 @@
 <main id="home">
 	<div id="navbar">
 		<div id="titleparent" class="navchild">
-			<span class="navtext">BikePark</span>
+			<span class="eachinside">BikePark</span>
 		</div>
 		{#if $validauthtoken == ""}
 			<form on:submit={login_handler}>
 				<div class="navchild">
-					<span class="navtext inputfieldlocationparent">
+					<span class="eachinside inputfieldlocationparent">
 						<input
 							class="inputfieldlocation"
 							type="email"
@@ -164,7 +164,7 @@
 					</span>
 				</div>
 				<div class="navchild">
-					<span class="navtext inputfieldlocationparent">
+					<span class="eachinside inputfieldlocationparent">
 						<input
 							class="inputfieldlocation"
 							type="password"
@@ -173,7 +173,7 @@
 					</span>
 				</div>
 				<div class="navchild">
-					<span class="navtext navbtnparent">
+					<span class="eachinside navbtnparent">
 						<input
 							class="inputfieldlocation navbtn"
 							id="loginbtn"
@@ -185,7 +185,7 @@
 			</form>
 		{:else}
 			<div class="navchild">
-				<span class="navtext navbtnparent">
+				<span class="eachinside navbtnparent">
 					<button
 						class="inputfieldlocation navbtn"
 						id="logoutbtn"
@@ -217,7 +217,7 @@
 		margin-right: 1vw;
 	}
 
-	.navtext {
+	.eachinside {
 		display: block;
 		color: black;
 		text-align: center;
