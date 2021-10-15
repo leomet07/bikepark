@@ -3,8 +3,13 @@
 
 	let email_input;
 	let password_input;
-	import { validauthtoken } from "../stores";
+	import auth from "../auth";
 
+	import { validauthtoken } from "../stores";
+	async function login_handler(e) {
+		e.preventDefault();
+		auth.login(email_input, password_input);
+	}
 	window.onload = async () => {
 		const center = [40.717, -74.012];
 		const startZoom = 18;
@@ -22,23 +27,25 @@
 			document
 				.querySelector(".remove_marker_button")
 				.addEventListener("click", async function () {
-					console.log("Clicked delete");
-					const delreq = await fetch(
-						window.BASE_URL + "/api/db/delete_place",
-						{
-							method: "DELETE",
-							headers: {
-								"Content-Type": "application/json",
-								"auth-token": $validauthtoken,
-							},
-							body: JSON.stringify({ _id: dbID }),
+					if ($validauthtoken) {
+						console.log("Clicked delete");
+						const delreq = await fetch(
+							window.BASE_URL + "/api/db/delete_place",
+							{
+								method: "DELETE",
+								headers: {
+									"Content-Type": "application/json",
+									"auth-token": $validauthtoken,
+								},
+								body: JSON.stringify({ _id: dbID }),
+							}
+						);
+
+						const deljson = await delreq.json();
+
+						if (deljson.success) {
+							map.removeLayer(clickedMarker);
 						}
-					);
-
-					const deljson = await delreq.json();
-
-					if (deljson.success) {
-						map.removeLayer(clickedMarker);
 					}
 				});
 		};
@@ -80,75 +87,46 @@
 			marker.on("popupopen", popupOpenHandler);
 		}
 
-		validauthtoken.subscribe((value) => {
-			if (value) {
-				map.addEventListener("dblclick", onMapClick);
-			}
-		});
+		map.addEventListener("dblclick", onMapClick);
 
 		// Script for adding marker on map click
 		async function onMapClick(e) {
-			console.log(e.latlng);
+			if ($validauthtoken) {
+				console.log(e.latlng);
 
-			const createreq = await fetch(
-				window.BASE_URL + "/api/db/create_place",
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						"auth-token": $validauthtoken,
-					},
-					body: JSON.stringify({
-						name: "Citi",
-						lat: e.latlng.lat,
-						long: e.latlng.lng,
-					}),
+				const createreq = await fetch(
+					window.BASE_URL + "/api/db/create_place",
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							"auth-token": $validauthtoken,
+						},
+						body: JSON.stringify({
+							name: "Citi",
+							lat: e.latlng.lat,
+							long: e.latlng.lng,
+						}),
+					}
+				);
+
+				const createjson = await createreq.json();
+
+				if (createjson.success) {
+					const marker = L.marker(e.latlng, {
+						title: "Dropped Marker",
+						alt: "Dropped Marker",
+						riseOnHover: true,
+						draggable: false,
+						placeDBid: createjson.place._id,
+					}).addTo(map);
+
+					marker.bindPopup(popup);
+					marker.on("popupopen", popupOpenHandler);
 				}
-			);
-
-			const createjson = await createreq.json();
-
-			if (createjson.success) {
-				const marker = L.marker(e.latlng, {
-					title: "Dropped Marker",
-					alt: "Dropped Marker",
-					riseOnHover: true,
-					draggable: false,
-					placeDBid: createjson.place._id,
-				}).addTo(map);
-
-				marker.bindPopup(popup);
-				marker.on("popupopen", popupOpenHandler);
 			}
 		}
 	};
-	async function login_handler(e) {
-		e.preventDefault();
-		console.log({ email_input, password_input });
-		let response = await fetch(window.BASE_URL + "/api/auth/login", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				email: email_input,
-				password: password_input,
-			}),
-		});
-		let responsejson = await response.json();
-		console.log(responsejson);
-		if (responsejson.logged_in) {
-			let token = responsejson.token;
-			window.localStorage.setItem("auth-token", token);
-
-			$validauthtoken = token;
-			console.log($validauthtoken);
-		}
-	}
-	async function logout() {
-		window.localStorage.setItem("auth-token", "");
-		$validauthtoken = "";
-	}
 </script>
 
 <main id="home">
@@ -191,7 +169,7 @@
 			<div class="navchild">
 				<span class="eachinside navbtnparent">
 					<button
-						on:click={logout}
+						on:click={auth.logout}
 						class="inputfieldlocation navbtn"
 						id="logoutbtn"
 						type="submit">Log Out</button
