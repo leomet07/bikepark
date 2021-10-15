@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const Place = require("../../model/Place");
-
+const verifyToken = require("../auth/middlewares/verifyToken");
 // Base route
 router.get("/", async (req, res) => {
 	res.json({ message: "Hello world for /api/db" });
@@ -9,7 +9,7 @@ router.get("/", async (req, res) => {
 router.get("/get_places", get_places_handler);
 router.post("/get_places", get_places_handler);
 // Create an place
-router.post("/create_place", async (req, res, next) => {
+router.post("/create_place", verifyToken, async (req, res, next) => {
 	try {
 		console.log("req.body", req.body);
 		const saved_place = await create_place(req.body);
@@ -24,7 +24,7 @@ router.post("/create_place", async (req, res, next) => {
 	}
 });
 
-router.delete("/delete_place", async (req, res, next) => {
+router.delete("/delete_place", verifyToken, async (req, res, next) => {
 	try {
 		const idToDelete = req.body._id;
 
