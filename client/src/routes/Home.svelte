@@ -145,6 +145,10 @@
 			console.log($validauthtoken);
 		}
 	}
+	async function logout() {
+		window.localStorage.setItem("auth-token", "");
+		$validauthtoken = "";
+	}
 </script>
 
 <main id="home">
@@ -187,6 +191,7 @@
 			<div class="navchild">
 				<span class="eachinside navbtnparent">
 					<button
+						on:click={logout}
 						class="inputfieldlocation navbtn"
 						id="logoutbtn"
 						type="submit">Log Out</button
