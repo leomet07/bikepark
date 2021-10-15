@@ -112,7 +112,7 @@
 
 <main id="home">
 	<div id="navbar">
-		<div class="navchild">
+		<div id="titleparent" class="navchild">
 			<span class="navtext">BikePark</span>
 		</div>
 		<div class="navchild">
@@ -125,6 +125,16 @@
 				<input class="inputfieldlocation" type="text" />
 			</span>
 		</div>
+		<div class="navchild">
+			<span class="navtext loginbtnparent">
+				<input
+					class="inputfieldlocation"
+					id="loginbtn"
+					type="submit"
+					value="Go!"
+				/>
+			</span>
+		</div>
 	</div>
 	<div id="mapid" />
 </main>
@@ -133,38 +143,47 @@
 	#navbar {
 		float: left;
 		background-color: pink;
-		height: 4vh;
 		width: 100vw;
-		min-height: 30px;
+		/* height: 4vh; */
+		/* min-height: 30px; */
+		height: 30px;
+		overflow: none;
 	}
-	.navchild {
+	.navchild,
+	#titleparent {
 		float: left;
 		margin: 0px;
 		padding: 0px;
+		max-width: max(150px, 6vw);
+		margin-right: 1vw;
 	}
 
 	.navtext {
 		display: block;
 		color: black;
 		text-align: center;
-		padding-top: max(7px, 1vh);
-		padding-bottom: max(10px, 1vh);
-		overflow: hidden;
+		padding-top: 5px;
+		padding-bottom: 10px;
+		overflow: none;
 		text-decoration: none;
 		min-height: 30px;
 		margin-right: 1vw;
 		margin-left: 1vw;
+		white-space: nowrap;
 	}
 
 	.inputfieldlocation {
 		width: max(150px, 6vw);
-		height: max(3vh, 20px);
+		height: 20px;
 		border: none;
 		border-radius: 0px;
+		font-size: 14px;
+		border: 1px solid black;
 	}
 	.inputfieldlocationparent {
-		padding-top: max(5px, 0.5vh);
-		padding-bottom: max(5px, 0.5vh);
+		padding-top: 4px;
+
+		padding-bottom: 5px;
 	}
 
 	#home {
@@ -175,7 +194,28 @@
 	#mapid {
 		margin: 0px;
 		width: 100%;
-		height: calc(100vh - max(4vh, 30px));
+		height: calc(100vh - 30px);
 		/* height: 96vh; */
+	}
+	.loginbtnparent {
+		padding-top: 3px;
+	}
+	#loginbtn {
+		width: 35px;
+		height: 25px;
+		border: 1px solid black;
+
+		padding-top: 2px;
+	}
+
+	@media only screen and (max-width: 900px) {
+		#titleparent {
+			display: none;
+		}
+
+		#navbar {
+			display: flex;
+			justify-content: space-between;
+		}
 	}
 </style>
