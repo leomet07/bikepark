@@ -1,3 +1,7 @@
-npm run build
+cd client
 
-vercel --prod
+call npm run build
+
+cd ..
+
+call vercel --prod
