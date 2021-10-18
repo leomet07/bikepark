@@ -1,14 +1,15 @@
 <script>
 	const popup = `<input type='button' value='Remove' class='remove_marker_button'/>`;
 
-	let email_input;
-	let password_input;
 	import auth from "../auth";
 
 	import { validauthtoken } from "../stores";
 	async function login_handler(e) {
 		e.preventDefault();
-		auth.login(email_input, password_input);
+		const email = document.querySelector("#email_input").value;
+		const password = document.querySelector("#password_input").value;
+
+		auth.login(email, password);
 	}
 	window.onload = async () => {
 		const center = [40.717, -74.012];
@@ -141,7 +142,7 @@
 						<input
 							class="inputfieldlocation"
 							type="email"
-							bind:value={email_input}
+							id="email_input"
 						/>
 					</span>
 				</div>
@@ -150,7 +151,7 @@
 						<input
 							class="inputfieldlocation"
 							type="password"
-							bind:value={password_input}
+							id="password_input"
 						/>
 					</span>
 				</div>
