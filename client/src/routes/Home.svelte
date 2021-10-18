@@ -157,7 +157,7 @@
 				<div class="navchild">
 					<span class="eachinside navbtnparent">
 						<input
-							class="inputfieldlocation navbtn"
+							class="inputfieldlocation navbtn "
 							id="loginbtn"
 							type="submit"
 							value="Go!"
@@ -244,10 +244,12 @@
 	}
 
 	.navbtn {
+		background-color: white;
+		color: black;
 		height: 25px;
-		border: 1px solid black;
-
 		padding-top: 2px;
+		border: 1px solid black;
+		border-radius: 0px;
 	}
 	#loginbtn {
 		width: 35px;
