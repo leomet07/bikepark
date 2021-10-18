@@ -6,7 +6,8 @@
 		"build": "rollup -c",
 		"serve": "rollup -c -w",
 		"dev": "rollup -c -w",
-		"start": "sirv public --single --no-clear"
+		"start": "sirv public --single --no-clear",
+		"expose": "sirv public --single --no-clear --host"
 	},
 	"devDependencies": {
 		"@rollup/plugin-commonjs": "^17.0.0",

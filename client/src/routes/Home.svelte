@@ -135,7 +135,7 @@
 			<span class="eachinside">BikePark</span>
 		</div>
 		{#if $validauthtoken == ""}
-			<form on:submit={login_handler}>
+			<form>
 				<div class="navchild">
 					<span class="eachinside inputfieldlocationparent">
 						<input
@@ -156,12 +156,13 @@
 				</div>
 				<div class="navchild">
 					<span class="eachinside navbtnparent">
-						<input
-							class="inputfieldlocation navbtn "
+						<button
+							on:click={login_handler}
+							class="inputfieldlocation navbtn"
 							id="loginbtn"
-							type="submit"
-							value="Go!"
-						/>
+						>
+							Go!
+						</button>
 					</span>
 				</div>
 			</form>
