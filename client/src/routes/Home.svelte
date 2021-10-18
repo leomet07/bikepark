@@ -245,11 +245,16 @@
 
 	.navbtn {
 		background-color: white;
-		color: black;
+		color: red;
 		height: 25px;
 		padding-top: 2px;
 		border: 1px solid black;
-		border-radius: 0px;
+
+		border-top-left-radius: 0px;
+		border-top-right-radius: 0px;
+		border-bottom-left-radius: 0px;
+		border-bottom-right-radius: 0px;
+		border-collapse: separate;
 	}
 	#loginbtn {
 		width: 35px;
