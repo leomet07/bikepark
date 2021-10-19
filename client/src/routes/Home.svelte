@@ -247,8 +247,6 @@
 		float: left;
 		background-color: pink;
 		width: 100vw;
-		/* height: 4vh; */
-		/* min-height: 30px; */
 		height: 30px;
 		overflow: none;
 	}
@@ -298,7 +296,6 @@
 		margin: 0px;
 		width: 100%;
 		height: calc(100vh - 30px);
-		/* height: 96vh; */
 	}
 	.navbtnparent {
 		padding-top: 3px;
@@ -311,20 +308,13 @@
 		padding-top: 2px;
 		border: 1px solid black;
 
-		border-top-left-radius: 0px;
-		border-top-right-radius: 0px;
-		border-bottom-left-radius: 0px;
-		border-bottom-right-radius: 0px;
-		border-collapse: separate;
+		border-radius: 0px;
 	}
 	#loginbtn {
 		width: 35px;
 	}
 	#logoutbtn {
 		width: 65px;
-	}
-	.popup {
-		background-color: blue;
 	}
 	@media only screen and (max-width: 900px) {
 		#titleparent {
