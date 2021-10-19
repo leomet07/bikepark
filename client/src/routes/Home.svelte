@@ -7,11 +7,13 @@
 		iconUrl: "/img/redmarker.png",
 		iconSize: [25, 41],
 		iconAnchor: [12.5, 41],
+		popupAnchor: [0, -41],
 	});
 	const blueMarker = L.icon({
 		iconUrl: "/img/bluemarker.png",
 		iconSize: [25, 41],
 		iconAnchor: [12.5, 41],
+		popupAnchor: [0, -41],
 	});
 
 	async function login_handler(e) {
@@ -30,6 +32,15 @@
 					<h2>Rating: ${place.rating}/5 satisfaction</h2>
 
 					<input type='button' value='Remove' class='remove_marker_button'/>
+				</div>
+				`;
+	};
+	const genVerifyCreate = () => {
+		console.log("genVerifyCreate");
+		return `
+				<div class = "popup">
+					<h2>Gen Verify Create</h2>
+					<button id = "verifybtn">Add it!</button>
 				</div>
 				`;
 	};
@@ -123,41 +134,25 @@
 		async function onMapClick(e) {
 			if ($validauthtoken) {
 				console.log(e.latlng);
+				const marker = L.marker(e.latlng, {
+					title: "Dropped Marker",
+					alt: "Dropped Marker",
+					riseOnHover: true,
+					draggable: false,
 
-				const createreq = await fetch(
-					window.BASE_URL + "/api/db/create_place",
-					{
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json",
-							"auth-token": $validauthtoken,
-						},
-						body: JSON.stringify({
-							name: "Dummy",
-							rating: 5,
-							lat: e.latlng.lat,
-							long: e.latlng.lng,
-						}),
-					}
-				);
+					icon: redMarker,
+				}).addTo(map);
 
-				const createjson = await createreq.json();
-
-				if (createjson.success) {
-					const marker = L.marker(e.latlng, {
-						title: "Dropped Marker",
-						alt: "Dropped Marker",
-						riseOnHover: true,
-						draggable: false,
-						placeDBid: createjson.place._id,
-						icon: redMarker,
-					}).addTo(map);
-
-					marker.bindPopup(() => {
-						return genPopup(createjson.place);
-					});
-					marker.on("popupopen", popupOpenHandler);
-				}
+				marker.bindPopup(() => {
+					return genVerifyCreate();
+				});
+				marker.on("popupopen", () => {
+					document
+						.querySelector("#verifybtn")
+						.addEventListener("click", async () => {
+							console.log("Verified", e.latlng);
+						});
+				});
 			}
 		}
 	};
