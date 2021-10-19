@@ -39,7 +39,7 @@
 		console.log("genVerifyCreate");
 		return `
 				<div class = "popup">
-					<h2>Gen Verify Create</h2>
+					<h2>Untilted Marker</h2>
 					<button id = "verifybtn">Add it!</button>
 				</div>
 				`;
@@ -134,7 +134,7 @@
 		async function onMapClick(e) {
 			if ($validauthtoken) {
 				console.log(e.latlng);
-				const marker = L.marker(e.latlng, {
+				const Askmarker = L.marker(e.latlng, {
 					title: "Dropped Marker",
 					alt: "Dropped Marker",
 					riseOnHover: true,
@@ -143,14 +143,45 @@
 					icon: redMarker,
 				}).addTo(map);
 
-				marker.bindPopup(() => {
+				Askmarker.bindPopup(() => {
 					return genVerifyCreate();
 				});
-				marker.on("popupopen", () => {
+				Askmarker.on("popupopen", () => {
 					document
 						.querySelector("#verifybtn")
 						.addEventListener("click", async () => {
 							console.log("Verified", e.latlng);
+							const createreq = await fetch(
+								window.BASE_URL + "/api/db/create_place",
+								{
+									method: "POST",
+									headers: {
+										"Content-Type": "application/json",
+										"auth-token": $validauthtoken,
+									},
+									body: JSON.stringify({
+										name: "Dummy",
+										rating: 5,
+										lat: e.latlng.lat,
+										long: e.latlng.lng,
+									}),
+								}
+							);
+							const createjson = await createreq.json();
+
+							if (createjson.success) {
+								map.removeLayer(Askmarker);
+								const marker = L.marker(e.latlng, {
+									riseOnHover: true,
+									draggable: false,
+									placeDBid: createjson.place._id,
+									icon: blueMarker,
+								}).addTo(map);
+								marker.bindPopup(() => {
+									return genPopup(createjson.place);
+								});
+								marker.on("popupopen", popupOpenHandler);
+							}
 						});
 				});
 			}
