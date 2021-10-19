@@ -3,6 +3,17 @@
 
 	import { validauthtoken } from "../stores";
 
+	const redMarker = L.icon({
+		iconUrl: "/img/redmarker.png",
+		iconSize: [25, 41],
+		iconAnchor: [12.5, 41],
+	});
+	const blueMarker = L.icon({
+		iconUrl: "/img/bluemarker.png",
+		iconSize: [25, 41],
+		iconAnchor: [12.5, 41],
+	});
+
 	async function login_handler(e) {
 		e.preventDefault();
 		const email = document.querySelector("#email_input").value;
@@ -26,7 +37,9 @@
 		const center = [40.717, -74.012];
 		const startZoom = 18;
 
-		let map = L.map("mapid", { tap: false }).setView(center, startZoom);
+		let map = L.map("mapid", {
+			tap: false,
+		}).setView(center, startZoom);
 		map.doubleClickZoom.disable();
 
 		const popupOpenHandler = function () {
@@ -91,8 +104,10 @@
 
 		for (let i = 0; i < places.length; i++) {
 			const place = places[i];
+
 			const marker = L.marker([place.lat, place.long], {
 				placeDBid: place._id,
+				icon: blueMarker,
 			}).addTo(map);
 
 			marker.bindPopup(() => {
@@ -118,7 +133,8 @@
 							"auth-token": $validauthtoken,
 						},
 						body: JSON.stringify({
-							name: "Citi",
+							name: "Dummy",
+							rating: 5,
 							lat: e.latlng.lat,
 							long: e.latlng.lng,
 						}),
@@ -134,6 +150,7 @@
 						riseOnHover: true,
 						draggable: false,
 						placeDBid: createjson.place._id,
+						icon: redMarker,
 					}).addTo(map);
 
 					marker.bindPopup(() => {
