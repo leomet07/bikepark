@@ -16,6 +16,8 @@
 		return `
 				<div class = "popup">
 					<h2>${place.name}</h2>
+					<h2>Rating: ${place.rating}/5 satisfaction</h2>
+
 					<input type='button' value='Remove' class='remove_marker_button'/>
 				</div>
 				`;
