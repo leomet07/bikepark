@@ -1,9 +1,8 @@
 <script>
-	const popup = `<input type='button' value='Remove' class='remove_marker_button'/>`;
-
 	import auth from "../auth";
 
 	import { validauthtoken } from "../stores";
+
 	async function login_handler(e) {
 		e.preventDefault();
 		const email = document.querySelector("#email_input").value;
@@ -11,6 +10,16 @@
 
 		auth.login(email, password);
 	}
+
+	const genPopup = (place) => {
+		console.log("Gen Popup", place);
+		return `
+				<div class = "popup">
+					<h2>${place.name}</h2>
+					<input type='button' value='Remove' class='remove_marker_button'/>
+				</div>
+				`;
+	};
 	window.onload = async () => {
 		const center = [40.717, -74.012];
 		const startZoom = 18;
@@ -83,7 +92,10 @@
 			const marker = L.marker([place.lat, place.long], {
 				placeDBid: place._id,
 			}).addTo(map);
-			marker.bindPopup(popup);
+
+			marker.bindPopup(() => {
+				return genPopup(place);
+			});
 
 			marker.on("popupopen", popupOpenHandler);
 		}
@@ -122,7 +134,9 @@
 						placeDBid: createjson.place._id,
 					}).addTo(map);
 
-					marker.bindPopup(popup);
+					marker.bindPopup(() => {
+						return genPopup(createjson.place);
+					});
 					marker.on("popupopen", popupOpenHandler);
 				}
 			}
@@ -264,7 +278,9 @@
 	#logoutbtn {
 		width: 65px;
 	}
-
+	.popup {
+		background-color: blue;
+	}
 	@media only screen and (max-width: 900px) {
 		#titleparent {
 			display: none;
