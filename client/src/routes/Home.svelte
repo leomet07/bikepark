@@ -26,11 +26,20 @@
 
 	const genPopup = (place) => {
 		console.log("Gen Popup", place);
+		const images_div =
+			place.images.length > 0
+				? `
+		<div>
+			<img width="200px" src="${place.images[0]}">
+			<br>
+		</div>`
+				: ``;
+
 		return `
 				<div class = "popup">
 					<h2>${place.name}</h2>
 					<h2>Rating: ${place.rating}/5 satisfaction</h2>
-
+					${images_div}
 					<input type='button' value='Remove' class='remove_marker_button'/>
 				</div>
 				`;
@@ -151,6 +160,9 @@
 						.querySelector("#verifybtn")
 						.addEventListener("click", async () => {
 							console.log("Verified", e.latlng);
+
+							// Get value from name field here
+
 							const createreq = await fetch(
 								window.BASE_URL + "/api/db/create_place",
 								{
