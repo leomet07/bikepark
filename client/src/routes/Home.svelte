@@ -48,7 +48,8 @@
 		console.log("genVerifyCreate");
 		return `
 				<div class = "popup">
-					<h2>Untilted Marker</h2>
+					<input class="proposed_name" id ="proposed_name" type="text" value="Untitled Marker"/>
+					<br/>
 					<button id = "verifybtn">Add it!</button>
 				</div>
 				`;
@@ -162,6 +163,8 @@
 							console.log("Verified", e.latlng);
 
 							// Get value from name field here
+							const proposed_name =
+								document.getElementById("proposed_name").value;
 
 							const createreq = await fetch(
 								window.BASE_URL + "/api/db/create_place",
@@ -172,7 +175,7 @@
 										"auth-token": $validauthtoken,
 									},
 									body: JSON.stringify({
-										name: "Dummy",
+										name: proposed_name,
 										rating: 5,
 										lat: e.latlng.lat,
 										long: e.latlng.lng,

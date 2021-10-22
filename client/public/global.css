@@ -74,3 +74,12 @@ button:not(:disabled):active {
 button:focus {
 	border-color: #666;
 }
+
+.proposed_name {
+	font-size: 18px;
+	width: 150px;
+	padding-left: 2px;
+	padding-right: 2px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
