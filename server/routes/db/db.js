@@ -36,6 +36,29 @@ router.delete("/delete_place", verifyToken, async (req, res, next) => {
 	}
 });
 
+router.post("/add_img_url_to_place", async (req, res, next) => {
+	try {
+		if (!req.body.image_url) {
+			console.log("No image url provided");
+
+			throw new Error("image_url was not provided in request body");
+		}
+
+		const old_images = (await Place.findById(req.body._id)).images;
+
+		const updated = await Place.findByIdAndUpdate(req.body._id, {
+			images: [...old_images, req.body.image_url],
+		});
+
+		res.json({
+			success: true,
+			new: updated,
+		});
+	} catch (error) {
+		next(error);
+	}
+});
+
 async function create_place(query) {
 	let place = await Place.create(query);
 	let saved_place = await place.save();

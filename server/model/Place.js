@@ -11,6 +11,7 @@ const placeSchema = new mongoose.Schema({
 	},
 	lat: { type: Number, required: true },
 	rating: { type: Number, min: 1, max: 5, required: true },
+	images: [String],
 });
 
 const placeModelfordb = mongoose.model("Place", placeSchema);
