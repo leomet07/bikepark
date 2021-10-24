@@ -37,10 +37,12 @@
 					<input type="file" accept="image/png, image/jpg, image/jpeg"  id="upload_file_form"/>
 					<br/>`;
 
+		const place_id_element = window.dev
+			? `<h5 class="place_id">${place._id}</h5><br/>`
+			: ``;
 		return `
 				<div class = "popup">
-					<h5 class="place_id">${place._id}</h5>
-					<br/>
+					${place_id_element}
 					<input class="edit_name" id ="edit_name" type="text" value="${place.name}"/>
 					<h2>Rating: ${place.rating}/5 satisfaction</h2>
 					${images_div}
