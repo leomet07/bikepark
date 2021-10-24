@@ -24,6 +24,15 @@
 		auth.login(email, password);
 	}
 
+	async function register_handler(e) {
+		e.preventDefault();
+
+		const email = document.querySelector("#email_input").value;
+		const password = document.querySelector("#password_input").value;
+
+		auth.register(email, password);
+	}
+
 	const genPopup = (place) => {
 		console.log("Gen Popup", place);
 		const images_div =
@@ -325,7 +334,18 @@
 							class="inputfieldlocation navbtn"
 							id="loginbtn"
 						>
-							Go!
+							Login
+						</button>
+					</span>
+				</div>
+				<div class="navchild">
+					<span class="eachinside navbtnparent">
+						<button
+							on:click={register_handler}
+							class="inputfieldlocation navbtn"
+							id="registerbtn"
+						>
+							Register
 						</button>
 					</span>
 				</div>
@@ -385,6 +405,7 @@
 		font-size: 14px;
 		border: 1px solid black;
 	}
+
 	.inputfieldlocationparent {
 		padding-top: 4px;
 
@@ -413,9 +434,14 @@
 		border: 1px solid black;
 
 		border-radius: 0px;
+		margin: 0;
 	}
 	#loginbtn {
-		width: 35px;
+		width: 45px;
+	}
+
+	#registerbtn {
+		width: 62px;
 	}
 	#logoutbtn {
 		width: 65px;
@@ -427,7 +453,25 @@
 
 		#navbar {
 			display: flex;
+			flex-wrap: nowrap;
 			justify-content: space-between;
+		}
+
+		.eachinside {
+			margin-right: 0vw;
+			margin-left: 0px;
+		}
+
+		#password_input {
+			width: 100px;
+		}
+
+		#email_input {
+			margin-left: 3px;
+		}
+
+		.inputfieldlocation {
+			width: 140px;
 		}
 	}
 </style>
