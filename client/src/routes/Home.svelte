@@ -112,7 +112,34 @@
 				.addEventListener("click", async () => {
 					console.log("Confirm button clicked");
 					const new_name = document.getElementById("edit_name").value;
+					const toSend = { name: new_name };
+					if (clickedMarker.options.images_length == 0) {
+						const uploaded_files =
+							document.getElementById("upload_file_form").files;
+						if (uploaded_files.length > 0) {
+							const uploaded_file = uploaded_files[0];
+							console.log(uploaded_file);
 
+							const formData = new FormData();
+
+							formData.append("file", uploaded_file);
+							const uploaded_response = await fetch(
+								window.BASE_URL + "/api/bucket_upload",
+								{
+									method: "POST",
+									body: formData,
+								}
+							);
+
+							const uploaded_json =
+								await uploaded_response.json();
+
+							const image_url = uploaded_json.url;
+
+							toSend.images = [image_url];
+						}
+					}
+					console.log("toSend: ", toSend);
 					const update_response = await fetch(
 						window.BASE_URL + "/api/db/update_place",
 						{
@@ -122,7 +149,7 @@
 							},
 							body: JSON.stringify({
 								_id: dbID,
-								new: { name: new_name },
+								new: toSend,
 							}),
 						}
 					);
