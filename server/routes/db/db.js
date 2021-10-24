@@ -24,6 +24,21 @@ router.post("/create_place", verifyToken, async (req, res, next) => {
 	}
 });
 
+// update a ninja in the db
+router.put("/update_place", async (req, res, next) => {
+	try {
+		const updated = await Place.findByIdAndUpdate(
+			req.body._id,
+			req.body.new,
+			{ new: true }
+		);
+
+		res.json({ success: true, new: updated });
+	} catch (error) {
+		next(error);
+	}
+});
+
 router.delete("/delete_place", verifyToken, async (req, res, next) => {
 	try {
 		const idToDelete = req.body._id;

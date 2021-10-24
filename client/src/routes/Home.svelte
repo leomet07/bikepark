@@ -40,6 +40,7 @@
 		return `
 				<div class = "popup">
 					<h5 class="place_id">${place._id}</h5>
+					<br/>
 					<input class="edit_name" id ="edit_name" type="text" value="${place.name}"/>
 					<h2>Rating: ${place.rating}/5 satisfaction</h2>
 					${images_div}
@@ -110,6 +111,31 @@
 				.getElementById("confirmbtn")
 				.addEventListener("click", async () => {
 					console.log("Confirm button clicked");
+					const new_name = document.getElementById("edit_name").value;
+
+					const update_response = await fetch(
+						window.BASE_URL + "/api/db/update_place",
+						{
+							method: "PUT",
+							headers: {
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify({
+								_id: dbID,
+								new: { name: new_name },
+							}),
+						}
+					);
+
+					const update_json = await update_response.json();
+
+					console.log(update_json);
+
+					const cloned_markers = $markers;
+					cloned_markers[clickedMarker.options.index] =
+						update_json.new;
+
+					$markers = cloned_markers;
 				});
 
 			if (clickedMarker.options.images_length == 0) {
