@@ -35,7 +35,7 @@
 		</div>`
 				: `
 					<input type="file" accept="image/png, image/jpg, image/jpeg"  id="upload_file_form"/>
-					<input type='button' value='Upload Image' class='add_image_button'/><br/>`;
+					<br/>`;
 
 		return `
 				<div class = "popup">
