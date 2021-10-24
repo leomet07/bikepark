@@ -37,10 +37,15 @@
 
 		return `
 				<div class = "popup">
+					<h5 class="place_id">${place._id}</h5>
 					<h2>${place.name}</h2>
 					<h2>Rating: ${place.rating}/5 satisfaction</h2>
 					${images_div}
 					<input type='button' value='Remove' class='remove_marker_button'/>
+
+					<br/>
+					<input type="file" accept="image/png, image/jpg, image/jpeg"  id="upload_file_form"/>
+					<input type='button' value='Upload Image' class='add_image_button'/>
 				</div>
 				`;
 	};
@@ -91,6 +96,55 @@
 
 						if (deljson.success) {
 							map.removeLayer(clickedMarker);
+						}
+					}
+				});
+			document
+				.querySelector(".add_image_button")
+				.addEventListener("click", async function () {
+					if ($validauthtoken) {
+						console.log("Add image button clicked ");
+						const uploaded_files =
+							document.getElementById("upload_file_form").files;
+
+						if (uploaded_files.length > 0) {
+							const uploaded_file = uploaded_files[0];
+							console.log(uploaded_file);
+
+							const formData = new FormData();
+
+							formData.append("file", uploaded_file);
+							const uploaded_response = await fetch(
+								window.BASE_URL + "/api/bucket_upload",
+								{
+									method: "POST",
+									body: formData,
+								}
+							);
+
+							const uploaded_json =
+								await uploaded_response.json();
+
+							const image_url = uploaded_json.url;
+
+							const added_response = await fetch(
+								window.BASE_URL +
+									"/api/db/add_img_url_to_place",
+								{
+									method: "POST",
+									headers: {
+										"Content-Type": "application/json",
+									},
+									body: JSON.stringify({
+										_id: dbID,
+										image_url: image_url,
+									}),
+								}
+							);
+
+							const added_json = await added_response.json();
+
+							console.log(added_json);
 						}
 					}
 				});

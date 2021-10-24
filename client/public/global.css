@@ -83,3 +83,8 @@ button:focus {
 	padding-top: 3px;
 	padding-bottom: 3px;
 }
+
+.place_id {
+	color: rgb(159, 174, 189);
+	float: right;
+}
