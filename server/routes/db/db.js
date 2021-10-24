@@ -46,9 +46,13 @@ router.post("/add_img_url_to_place", async (req, res, next) => {
 
 		const old_images = (await Place.findById(req.body._id)).images;
 
-		const updated = await Place.findByIdAndUpdate(req.body._id, {
-			images: [...old_images, req.body.image_url],
-		});
+		const updated = await Place.findByIdAndUpdate(
+			req.body._id,
+			{
+				images: [...old_images, req.body.image_url],
+			},
+			{ new: true }
+		);
 
 		res.json({
 			success: true,

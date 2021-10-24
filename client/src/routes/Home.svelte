@@ -1,7 +1,7 @@
 <script>
 	import auth from "../auth";
 
-	import { validauthtoken } from "../stores";
+	import { validauthtoken, markers } from "../stores";
 
 	const redMarker = L.icon({
 		iconUrl: "/img/redmarker.png",
@@ -144,7 +144,11 @@
 
 							const added_json = await added_response.json();
 
-							console.log(added_json);
+							const cloned_markers = $markers;
+							cloned_markers[clickedMarker.options.index] =
+								added_json.new;
+
+							$markers = cloned_markers;
 						}
 					}
 				});
@@ -164,6 +168,7 @@
 			}
 		).addTo(map);
 
+		const leafletMarkers = L.layerGroup().addTo(map);
 		const get_places_req = await fetch(
 			window.BASE_URL + "/api/db/get_places",
 			{
@@ -174,23 +179,28 @@
 				body: "{}",
 			}
 		);
+		markers.subscribe((newmarkers) => {
+			leafletMarkers.clearLayers();
+			console.log("New markers: ", newmarkers);
+			for (let i = 0; i < newmarkers.length; i++) {
+				const place = newmarkers[i];
 
+				const marker = L.marker([place.lat, place.long], {
+					placeDBid: place._id,
+					icon: blueMarker,
+					index: i,
+				}).addTo(leafletMarkers);
+
+				marker.bindPopup(() => {
+					return genPopup(place);
+				});
+
+				marker.on("popupopen", popupOpenHandler);
+			}
+		});
 		const places = (await get_places_req.json()).places;
 
-		for (let i = 0; i < places.length; i++) {
-			const place = places[i];
-
-			const marker = L.marker([place.lat, place.long], {
-				placeDBid: place._id,
-				icon: blueMarker,
-			}).addTo(map);
-
-			marker.bindPopup(() => {
-				return genPopup(place);
-			});
-
-			marker.on("popupopen", popupOpenHandler);
-		}
+		$markers = places;
 
 		map.addEventListener("dblclick", onMapClick);
 
