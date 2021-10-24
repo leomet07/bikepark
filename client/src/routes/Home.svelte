@@ -40,14 +40,20 @@
 		const place_id_element = window.dev
 			? `<h5 class="place_id">${place._id}</h5><br/>`
 			: ``;
+
+		const elements_when_auth = $validauthtoken
+			? `
+					<button id = "confirm_${place._id}" class="confirmbtn">Update</button>
+					<button class='remove_marker_button'>Remove</button>
+					`
+			: ``;
 		return `
 				<div class = "popup">
 					${place_id_element}
 					<input class="edit_name" id ="edit_name" type="text" value="${place.name}"/>
 					<h2>Rating: ${place.rating}/5 satisfaction</h2>
 					${images_div}
-					<button id = "confirm_${place._id}" class="confirmbtn">Update</button>
-					<input type='button' value='Remove' class='remove_marker_button'/>
+					${elements_when_auth}
 				</div>
 				`;
 	};
@@ -76,96 +82,106 @@
 			console.log("Clicked marker");
 
 			const dbID = clickedMarker.options.placeDBid;
-
-			document
-				.querySelector(".remove_marker_button")
-				.addEventListener("click", async function () {
-					if ($validauthtoken) {
-						console.log("Clicked delete");
-						const delreq = await fetch(
-							window.BASE_URL + "/api/db/delete_place",
-							{
-								method: "DELETE",
-								headers: {
-									"Content-Type": "application/json",
-									"auth-token": $validauthtoken,
-								},
-								body: JSON.stringify({ _id: dbID }),
-							}
-						);
-
-						const deljson = await delreq.json();
-
-						if (deljson.success) {
-							const cloned_markers = $markers;
-
-							cloned_markers.splice(
-								clickedMarker.options.index,
-								1
-							);
-
-							$markers = cloned_markers;
-						}
-					}
-				});
-
-			document
-				.getElementById("confirm_" + dbID)
-				.addEventListener("click", async () => {
-					console.log("Confirm button clicked");
-					const new_name = document.getElementById("edit_name").value;
-					const toSend = { name: new_name };
-					if (clickedMarker.options.images_length == 0) {
-						const uploaded_files =
-							document.getElementById("upload_file_form").files;
-						if (uploaded_files.length > 0) {
-							const uploaded_file = uploaded_files[0];
-							console.log(uploaded_file);
-
-							const formData = new FormData();
-
-							formData.append("file", uploaded_file);
-							const uploaded_response = await fetch(
-								window.BASE_URL + "/api/bucket_upload",
+			if ($validauthtoken) {
+				document
+					.querySelector(".remove_marker_button")
+					.addEventListener("click", async function () {
+						if ($validauthtoken) {
+							// In case event listener remains, or is triggered manually, etc
+							console.log("Clicked delete");
+							const delreq = await fetch(
+								window.BASE_URL + "/api/db/delete_place",
 								{
-									method: "POST",
-									body: formData,
+									method: "DELETE",
+									headers: {
+										"Content-Type": "application/json",
+										"auth-token": $validauthtoken,
+									},
+									body: JSON.stringify({ _id: dbID }),
 								}
 							);
 
-							const uploaded_json =
-								await uploaded_response.json();
+							const deljson = await delreq.json();
 
-							const image_url = uploaded_json.url;
+							if (deljson.success) {
+								const cloned_markers = $markers;
 
-							toSend.images = [image_url];
+								cloned_markers.splice(
+									clickedMarker.options.index,
+									1
+								);
+
+								$markers = cloned_markers;
+							}
 						}
-					}
-					console.log("toSend: ", toSend);
-					const update_response = await fetch(
-						window.BASE_URL + "/api/db/update_place",
-						{
-							method: "PUT",
-							headers: {
-								"Content-Type": "application/json",
-							},
-							body: JSON.stringify({
-								_id: dbID,
-								new: toSend,
-							}),
+					});
+
+				document
+					.getElementById("confirm_" + dbID)
+					.addEventListener("click", async () => {
+						if ($validauthtoken) {
+							console.log("Confirm button clicked");
+							const new_name =
+								document.getElementById("edit_name").value;
+							const toSend = { name: new_name };
+							if (clickedMarker.options.images_length == 0) {
+								// In case event listener remains, or is triggered manually, etc
+								const uploaded_files =
+									document.getElementById(
+										"upload_file_form"
+									).files;
+								if (uploaded_files.length > 0) {
+									const uploaded_file = uploaded_files[0];
+									console.log(uploaded_file);
+
+									const formData = new FormData();
+
+									formData.append("file", uploaded_file);
+									const uploaded_response = await fetch(
+										window.BASE_URL + "/api/bucket_upload",
+										{
+											method: "POST",
+											body: formData,
+										}
+									);
+
+									const uploaded_json =
+										await uploaded_response.json();
+
+									const image_url = uploaded_json.url;
+
+									toSend.images = [image_url];
+								}
+							}
+							console.log("toSend: ", toSend);
+							const update_response = await fetch(
+								window.BASE_URL + "/api/db/update_place",
+								{
+									method: "PUT",
+									headers: {
+										"Content-Type": "application/json",
+										"auth-token": $validauthtoken,
+									},
+									body: JSON.stringify({
+										_id: dbID,
+										new: toSend,
+									}),
+								}
+							);
+
+							const update_json = await update_response.json();
+							if (update_json.success) {
+								console.log(update_json);
+
+								const cloned_markers = $markers;
+								cloned_markers[clickedMarker.options.index] =
+									update_json.new;
+
+								$markers = cloned_markers;
+							}
 						}
-					);
-
-					const update_json = await update_response.json();
-
-					console.log(update_json);
-
-					const cloned_markers = $markers;
-					cloned_markers[clickedMarker.options.index] =
-						update_json.new;
-
-					$markers = cloned_markers;
-				});
+					});
+			}
 		};
 		L.tileLayer(
 			"https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",

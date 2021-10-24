@@ -25,7 +25,7 @@ router.post("/create_place", verifyToken, async (req, res, next) => {
 });
 
 // update a ninja in the db
-router.put("/update_place", async (req, res, next) => {
+router.put("/update_place", verifyToken, async (req, res, next) => {
 	try {
 		const updated = await Place.findByIdAndUpdate(
 			req.body._id,
@@ -51,7 +51,7 @@ router.delete("/delete_place", verifyToken, async (req, res, next) => {
 	}
 });
 
-router.post("/add_img_url_to_place", async (req, res, next) => {
+router.post("/add_img_url_to_place", verifyToken, async (req, res, next) => {
 	try {
 		if (!req.body.image_url) {
 			console.log("No image url provided");
