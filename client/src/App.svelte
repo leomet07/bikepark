@@ -7,15 +7,16 @@
 	import { validauthtoken } from "./stores";
 
 	window.BASE_URL = "https://bikeparkbackend.herokuapp.com";
-
+	window.dev = false;
 	if (
 		window.location.hostname == "localhost" ||
 		window.location.hostname == "127.0.0.1"
 	) {
-		console.log("In development mode");
+		window.dev = true;
 		window.BASE_URL = "http://127.0.0.1:8060";
 	}
 	console.log(window.BASE_URL);
+	console.log("window.dev: ", window.dev);
 
 	onMount(async () => {
 		const localAuthToken = window.localStorage.getItem("auth-token");
