@@ -437,7 +437,7 @@
 		margin: 0;
 	}
 	#loginbtn {
-		width: 45px;
+		width: 47px;
 	}
 
 	#registerbtn {
