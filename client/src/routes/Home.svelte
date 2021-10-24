@@ -33,7 +33,9 @@
 			<img width="200px" src="${place.images[0]}">
 			<br>
 		</div>`
-				: ``;
+				: `
+					<input type="file" accept="image/png, image/jpg, image/jpeg"  id="upload_file_form"/>
+					<input type='button' value='Upload Image' class='add_image_button'/><br/>`;
 
 		return `
 				<div class = "popup">
@@ -42,10 +44,7 @@
 					<h2>Rating: ${place.rating}/5 satisfaction</h2>
 					${images_div}
 					<input type='button' value='Remove' class='remove_marker_button'/>
-
-					<br/>
-					<input type="file" accept="image/png, image/jpg, image/jpeg"  id="upload_file_form"/>
-					<input type='button' value='Upload Image' class='add_image_button'/>
+					
 				</div>
 				`;
 	};
@@ -169,6 +168,8 @@
 		).addTo(map);
 
 		const leafletMarkers = L.layerGroup().addTo(map);
+		const askMarkers = L.layerGroup().addTo(map);
+
 		const get_places_req = await fetch(
 			window.BASE_URL + "/api/db/get_places",
 			{
@@ -215,7 +216,7 @@
 					draggable: false,
 
 					icon: redMarker,
-				}).addTo(map);
+				}).addTo(askMarkers);
 
 				Askmarker.bindPopup(() => {
 					return genVerifyCreate();
@@ -249,17 +250,9 @@
 							const createjson = await createreq.json();
 
 							if (createjson.success) {
-								map.removeLayer(Askmarker);
-								const marker = L.marker(e.latlng, {
-									riseOnHover: true,
-									draggable: false,
-									placeDBid: createjson.place._id,
-									icon: blueMarker,
-								}).addTo(map);
-								marker.bindPopup(() => {
-									return genPopup(createjson.place);
-								});
-								marker.on("popupopen", popupOpenHandler);
+								askMarkers.removeLayer(Askmarker);
+
+								$markers = [...$markers, createjson.place];
 							}
 						});
 				});
