@@ -1,3 +1,3 @@
-# Bike Park
+# BikePark
 
 A webapp designed to support biking and bikers by showing bike parking!
