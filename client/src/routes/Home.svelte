@@ -94,63 +94,75 @@
 						const deljson = await delreq.json();
 
 						if (deljson.success) {
-							map.removeLayer(clickedMarker);
-						}
-					}
-				});
-			document
-				.querySelector(".add_image_button")
-				.addEventListener("click", async function () {
-					if ($validauthtoken) {
-						console.log("Add image button clicked ");
-						const uploaded_files =
-							document.getElementById("upload_file_form").files;
-
-						if (uploaded_files.length > 0) {
-							const uploaded_file = uploaded_files[0];
-							console.log(uploaded_file);
-
-							const formData = new FormData();
-
-							formData.append("file", uploaded_file);
-							const uploaded_response = await fetch(
-								window.BASE_URL + "/api/bucket_upload",
-								{
-									method: "POST",
-									body: formData,
-								}
-							);
-
-							const uploaded_json =
-								await uploaded_response.json();
-
-							const image_url = uploaded_json.url;
-
-							const added_response = await fetch(
-								window.BASE_URL +
-									"/api/db/add_img_url_to_place",
-								{
-									method: "POST",
-									headers: {
-										"Content-Type": "application/json",
-									},
-									body: JSON.stringify({
-										_id: dbID,
-										image_url: image_url,
-									}),
-								}
-							);
-
-							const added_json = await added_response.json();
-
 							const cloned_markers = $markers;
-							cloned_markers[clickedMarker.options.index] =
-								added_json.new;
+
+							cloned_markers.splice(
+								clickedMarker.options.index,
+								1
+							);
 
 							$markers = cloned_markers;
 						}
 					}
 				});
+
+			if (clickedMarker.options.images_length == 0) {
+				document
+					.querySelector(".add_image_button")
+					.addEventListener("click", async function () {
+						if ($validauthtoken) {
+							console.log("Add image button clicked ");
+							const uploaded_files =
+								document.getElementById(
+									"upload_file_form"
+								).files;
+
+							if (uploaded_files.length > 0) {
+								const uploaded_file = uploaded_files[0];
+								console.log(uploaded_file);
+
+								const formData = new FormData();
+
+								formData.append("file", uploaded_file);
+								const uploaded_response = await fetch(
+									window.BASE_URL + "/api/bucket_upload",
+									{
+										method: "POST",
+										body: formData,
+									}
+								);
+
+								const uploaded_json =
+									await uploaded_response.json();
+
+								const image_url = uploaded_json.url;
+
+								const added_response = await fetch(
+									window.BASE_URL +
+										"/api/db/add_img_url_to_place",
+									{
+										method: "POST",
+										headers: {
+											"Content-Type": "application/json",
+										},
+										body: JSON.stringify({
+											_id: dbID,
+											image_url: image_url,
+										}),
+									}
+								);
+
+								const added_json = await added_response.json();
+
+								const cloned_markers = $markers;
+								cloned_markers[clickedMarker.options.index] =
+									added_json.new;
+
+								$markers = cloned_markers;
+							}
+						}
+					});
+			}
 		};
 		L.tileLayer(
 			"https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
@@ -190,6 +202,7 @@
 					placeDBid: place._id,
 					icon: blueMarker,
 					index: i,
+					images_length: place.images.length,
 				}).addTo(leafletMarkers);
 
 				marker.bindPopup(() => {
