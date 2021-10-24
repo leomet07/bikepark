@@ -40,11 +40,11 @@
 		return `
 				<div class = "popup">
 					<h5 class="place_id">${place._id}</h5>
-					<h2>${place.name}</h2>
+					<input class="edit_name" id ="edit_name" type="text" value="${place.name}"/>
 					<h2>Rating: ${place.rating}/5 satisfaction</h2>
 					${images_div}
+					<button id = "confirmbtn">Update</button>
 					<input type='button' value='Remove' class='remove_marker_button'/>
-					
 				</div>
 				`;
 	};
@@ -104,6 +104,12 @@
 							$markers = cloned_markers;
 						}
 					}
+				});
+
+			document
+				.getElementById("confirmbtn")
+				.addEventListener("click", async () => {
+					console.log("Confirm button clicked");
 				});
 
 			if (clickedMarker.options.images_length == 0) {
