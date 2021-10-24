@@ -44,7 +44,7 @@
 					<input class="edit_name" id ="edit_name" type="text" value="${place.name}"/>
 					<h2>Rating: ${place.rating}/5 satisfaction</h2>
 					${images_div}
-					<button id = "confirmbtn">Update</button>
+					<button id = "confirm_${place._id}" class="confirmbtn">Update</button>
 					<input type='button' value='Remove' class='remove_marker_button'/>
 				</div>
 				`;
@@ -108,7 +108,7 @@
 				});
 
 			document
-				.getElementById("confirmbtn")
+				.getElementById("confirm_" + dbID)
 				.addEventListener("click", async () => {
 					console.log("Confirm button clicked");
 					const new_name = document.getElementById("edit_name").value;
