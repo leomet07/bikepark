@@ -97,3 +97,17 @@ button:focus {
 	color: rgb(159, 174, 189);
 	float: right;
 }
+
+.place_name {
+	font-size: 18px;
+	margin: 0px;
+}
+
+.place_rating {
+	margin-bottom: 5px;
+}
+
+.edit_rating {
+	width: 35px;
+	padding: 2px;
+}

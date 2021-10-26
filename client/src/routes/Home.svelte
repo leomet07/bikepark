@@ -56,11 +56,19 @@
 					<button class='remove_marker_button'>Remove</button>
 					`
 			: ``;
+
+		const place_name_element = $validauthtoken
+			? `<input class="edit_name" id ="edit_name" type="text" value="${place.name}"/>`
+			: `<div class = "place_name">${place.name}</div>`;
+		const place_rating_element = $validauthtoken
+			? `<h2 class = "place_rating">Rating: <input class="edit_rating" max ="5" min = "1" id ="edit_rating" type="number" value="${place.rating}"/>/5</h2>`
+			: `<h2 class = "place_rating">Rating: ${place.rating}/5</h2>`;
 		return `
 				<div class = "popup">
 					${place_id_element}
-					<input class="edit_name" id ="edit_name" type="text" value="${place.name}"/>
-					<h2>Rating: ${place.rating}/5 satisfaction</h2>
+					${place_name_element}
+					${place_rating_element}
+					
 					${images_div}
 					${elements_when_auth}
 				</div>
@@ -132,7 +140,12 @@
 							console.log("Confirm button clicked");
 							const new_name =
 								document.getElementById("edit_name").value;
-							const toSend = { name: new_name };
+							const new_rating =
+								document.getElementById("edit_rating").value;
+							const toSend = {
+								name: new_name,
+								rating: new_rating,
+							};
 							if (clickedMarker.options.images_length == 0) {
 								// In case event listener remains, or is triggered manually, etc
 								const uploaded_files =
