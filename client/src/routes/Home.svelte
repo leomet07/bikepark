@@ -63,6 +63,13 @@
 		const place_rating_element = $validauthtoken
 			? `<h2 class = "place_rating">Rating: <input class="edit_rating" max ="5" min = "1" id ="edit_rating" type="number" value="${place.rating}"/>/5</h2>`
 			: `<h2 class = "place_rating">Rating: ${place.rating}/5</h2>`;
+
+		const description_text_to_show = place.description
+			? place.description
+			: "";
+		const place_description_element = $validauthtoken
+			? `<textarea class="edit_description" id ="edit_description">${description_text_to_show}</textarea> <br/>`
+			: `<div class = "place_description">${description_text_to_show}</div>`;
 		return `
 				<div class = "popup">
 					${place_id_element}
@@ -70,6 +77,8 @@
 					${place_rating_element}
 					
 					${images_div}
+					${place_description_element}
+
 					${elements_when_auth}
 				</div>
 				`;
@@ -142,9 +151,14 @@
 								document.getElementById("edit_name").value;
 							const new_rating =
 								document.getElementById("edit_rating").value;
+							const new_description =
+								document.getElementById(
+									"edit_description"
+								).value;
 							const toSend = {
 								name: new_name,
 								rating: new_rating,
+								description: new_description,
 							};
 							if (clickedMarker.options.images_length == 0) {
 								// In case event listener remains, or is triggered manually, etc

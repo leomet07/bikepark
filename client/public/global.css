@@ -111,3 +111,17 @@ button:focus {
 	width: 35px;
 	padding: 2px;
 }
+
+.place_description,
+.edit_description {
+	width: 200px;
+	font-size: 14px;
+}
+
+.place_description {
+	padding: 0px;
+}
+
+.edit_description {
+	height: 80px;
+}
